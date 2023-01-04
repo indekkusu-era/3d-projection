@@ -31,7 +31,7 @@ class Camera:
         rz = np.array([[cos(psi),-sin(psi),0], [sin(psi),cos(psi),0], [0,0,1]])
         return rx @ ry @ rz
     
-    def transform(self, object_position: tuple):
+    def transform(self, object_position: tuple, perspective=True):
         x, y, z = object_position
         x_cam, y_cam, z_cam = self.position
         relative_pos = np.array((x - x_cam, y - y_cam, z - z_cam)).reshape(-1, 1)
@@ -40,4 +40,6 @@ class Camera:
             return (0,0), 0
 
         size = 1 / inv_size
-        return (x_2d, y_2d), size
+        if not perspective:
+            return (x_2d, y_2d), size
+        return (x_2d * size, y_2d * size), size
